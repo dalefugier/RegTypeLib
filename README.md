@@ -1,5 +1,4 @@
 # RegTypeLib
-=========
 
 Windows Type Library (TLB) registration utility
 
