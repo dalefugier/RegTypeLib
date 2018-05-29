@@ -16,11 +16,11 @@ bool FileExists(const wchar_t* pszFileName)
     return rc;
 
   WIN32_FIND_DATA FindFileData;
-  memset(&FindFileData , 0 , sizeof(WIN32_FIND_DATA));
+  memset(&FindFileData, 0, sizeof(WIN32_FIND_DATA));
 
   HANDLE hFind = FindFirstFile(pszFileName, &FindFileData);
   rc = (hFind != INVALID_HANDLE_VALUE);
-  if (rc) 
+  if (rc)
     FindClose(hFind);
 
   return rc;
@@ -60,7 +60,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
   wchar_t** pszArgs = CommandLineToArgvW(GetCommandLineW(), &num_args);
   if (0 == pszArgs || num_args < 2 || num_args > 3)
   {
-    const wchar_t* pszMessage = 
+    const wchar_t* pszMessage =
       L"Type Library Registration Utility\n"
       L"Copyright © 2013, Robert McNeel & Associates\n\n"
       L"Usage: RegTypeLib tlbname [/R] [/U]\n\n"
@@ -70,58 +70,58 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
     return -1;
   }
 
-	wchar_t szFileName[_MAX_PATH];
+  wchar_t szFileName[_MAX_PATH];
   wmemset(szFileName, 0, _MAX_PATH);
   StringCchCopy(szFileName, _MAX_PATH, pszArgs[1]);
 
-	bool bRegister = (num_args == 3) ? DoRegister(pszArgs[2]) : true;
+  bool bRegister = (num_args == 3) ? DoRegister(pszArgs[2]) : true;
 
   LocalFree(pszArgs); // Don't leak...
   pszArgs = 0;
 
-	if (!FileExists(szFileName))
-	{
-		MessageBox(0, L"File not found.", pszAppName, MB_ICONHAND);
-		return -1;
-	}
+  if (!FileExists(szFileName))
+  {
+    MessageBox(0, L"File not found.", pszAppName, MB_ICONHAND);
+    return -1;
+  }
 
-  CoInitialize( 0 );
+  CoInitialize(0);
 
-	ITypeLib* pTypeLib = 0;
-	HRESULT hResult = LoadTypeLib(szFileName, &pTypeLib);
-	if (FAILED(hResult))
-	{
-		MessageBox(0, L"Unable to load type library.", pszAppName, MB_ICONHAND);
-		CoUninitialize();
-		return hResult;
-	}
-
-	if (bRegister)
-	{
-		hResult = RegisterTypeLib(pTypeLib, szFileName, 0);
-		if (FAILED(hResult))
-			MessageBox(0, L"Unable to register type library.", pszAppName, MB_ICONHAND);
-    else
-  		MessageBox(0, L"Type Library registration successful.", pszAppName, MB_ICONINFORMATION);
-    
-    pTypeLib->Release();
-		CoUninitialize();
+  ITypeLib* pTypeLib = 0;
+  HRESULT hResult = LoadTypeLib(szFileName, &pTypeLib);
+  if (FAILED(hResult))
+  {
+    MessageBox(0, L"Unable to load type library.", pszAppName, MB_ICONHAND);
+    CoUninitialize();
     return hResult;
   }
 
-	TLIBATTR* pLibAttr = 0;
-	hResult = pTypeLib->GetLibAttr(&pLibAttr);
-	if (FAILED(hResult))
-	{
-		MessageBox(0, L"Unable to get type library attributes.", pszAppName, MB_ICONHAND);
-		pTypeLib->Release();
-		CoUninitialize();
-		return hResult;
-	}
+  if (bRegister)
+  {
+    hResult = RegisterTypeLib(pTypeLib, szFileName, 0);
+    if (FAILED(hResult))
+      MessageBox(0, L"Unable to register type library.", pszAppName, MB_ICONHAND);
+    else
+      MessageBox(0, L"Type Library registration successful.", pszAppName, MB_ICONINFORMATION);
+
+    pTypeLib->Release();
+    CoUninitialize();
+    return hResult;
+  }
+
+  TLIBATTR* pLibAttr = 0;
+  hResult = pTypeLib->GetLibAttr(&pLibAttr);
+  if (FAILED(hResult))
+  {
+    MessageBox(0, L"Unable to get type library attributes.", pszAppName, MB_ICONHAND);
+    pTypeLib->Release();
+    CoUninitialize();
+    return hResult;
+  }
 
   hResult = UnRegisterTypeLib(pLibAttr->guid, pLibAttr->wMajorVerNum, pLibAttr->wMinorVerNum, pLibAttr->lcid, pLibAttr->syskind);
-	pTypeLib->ReleaseTLibAttr(pLibAttr);
-	pTypeLib->Release();
+  pTypeLib->ReleaseTLibAttr(pLibAttr);
+  pTypeLib->Release();
 
   if (FAILED(hResult) && 0x8002801C != hResult)
     MessageBox(0, L"Unable to unregister type library.", pszAppName, MB_ICONINFORMATION);
@@ -130,5 +130,5 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
 
   CoUninitialize();
 
-	return hResult;
+  return hResult;
 }
