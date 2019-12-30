@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright © 2013 Robert McNeel & Associates. All rights reserved.
+// Copyright Â© 2013 Robert McNeel & Associates. All rights reserved.
 // Rhinoceros is a registered trademark of Robert McNeel & Assoicates.
 //
 // THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY.
@@ -28,7 +28,7 @@ bool FileExists(const wchar_t* pszFileName)
 
 bool DoRegister(const wchar_t* pszFlag)
 {
-  bool rc = false;
+  bool rc = true;
   if (0 == pszFlag || 0 == pszFlag[0])
     return rc;
 
@@ -41,13 +41,13 @@ bool DoRegister(const wchar_t* pszFlag)
   else if (0 == _wcsicmp(pszFlag, L"-r"))
     rc = true;
   else if (0 == _wcsicmp(pszFlag, L"/unregister"))
-    rc = true;
+    rc = false;
   else if (0 == _wcsicmp(pszFlag, L"-unregister"))
-    rc = true;
+    rc = false;
   else if (0 == _wcsicmp(pszFlag, L"/u"))
-    rc = true;
+    rc = false;
   else if (0 == _wcsicmp(pszFlag, L"-u"))
-    rc = true;
+    rc = false;
 
   return rc;
 }
@@ -62,7 +62,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
   {
     const wchar_t* pszMessage =
       L"Type Library Registration Utility\n"
-      L"Copyright © 2013, Robert McNeel & Associates\n\n"
+      L"Copyright Â© 2013, Robert McNeel & Associates\n\n"
       L"Usage: RegTypeLib tlbname [/R] [/U]\n\n"
       L"/R - Registers the specified type library.\n"
       L"/U - Unregisters the specified type library.";
